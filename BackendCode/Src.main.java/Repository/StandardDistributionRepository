@@ -1,0 +1,7 @@
+package com.example.employeeperformance.repository;
+
+import com.example.employeeperformance.model.StandardDistribution;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StandardDistributionRepository extends JpaRepository<StandardDistribution, Long> {
+}
