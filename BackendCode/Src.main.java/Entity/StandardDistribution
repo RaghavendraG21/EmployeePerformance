@@ -1,0 +1,36 @@
+package com.example.employeeperformance.model;
+
+import lombok.Getter;
+import lombok.Setter;
+import jakarta.persistence.*;
+
+@Entity
+@Getter
+@Setter
+public class StandardDistribution {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String rating;
+    private int percentage;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getRating() {
+		return rating;
+	}
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+	public int getPercentage() {
+		return percentage;
+	}
+	public void setPercentage(int percentage) {
+		this.percentage = percentage;
+	}
+    
+}
