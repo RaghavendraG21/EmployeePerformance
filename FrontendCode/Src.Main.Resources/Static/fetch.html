@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch All Employees</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f7;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .employee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .employee-table th, .employee-table td {
+            border: 1px solid #bdc3c7;
+            padding: 10px;
+            text-align: center;
+        }
+        .employee-table th {
+            background-color: #3498db;
+            color: #fff;
+        }
+        .employee-table tr:nth-child(even) {
+            background-color: #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>All Employees</h1>
+        <div id="employeeList"></div>
+    </div>
+    <script>
+        fetch('/employees')
+            .then(response => response.json())
+            .then(data => {
+                const table = `<table class="employee-table">
+                                <thead>
+                                    <tr><th>ID</th><th>Name</th><th>Department</th><th>Rating</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${data.map(emp => `<tr><td>${emp.id}</td><td>${emp.name}</td><td>${emp.department}</td><td>${emp.rating}</td></tr>`).join('')}
+                                </tbody>
+                            </table>`;
+                document.getElementById('employeeList').innerHTML = table;
+            });
+    </script>
+</body>
+</html>
