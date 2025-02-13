@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Adjustments</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #6e45e2, #88d3ce);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #6e45e2;
+            color: #fff;
+        }
+
+        .btn {
+            background: #6e45e2;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #573dc6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Performance Adjustments</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Standard %</th>
+                    <th>Actual %</th>
+                    <th>Deviation %</th>
+                </tr>
+            </thead>
+            <tbody id="adjustmentsBody"></tbody>
+        </table>
+        <button class="btn" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <script>
+        const standardPercentages = { 
+            'Outstanding (A)': 10, 
+            'Very Good (B)': 20, 
+            'Good (C)': 40, 
+            'Needs Improvement (D)': 20, 
+            'Low Performers (E)': 10 
+        };
+        const employees = [
+            'A', 'B', 'C', 'C', 'E', 'A', 'C', 'C', 'B', 'E', 'A', 'C', 'D', 'C', 'E'
+        ];
+        const totalEmployees = employees.length;
+
+        const categoryCounts = employees.reduce((acc, rating) => {
+            acc[rating] = (acc[rating] || 0) + 1;
+            return acc;
+        }, {});
+
+        const tbody = document.getElementById('adjustmentsBody');
+
+        Object.entries(standardPercentages).forEach(([categoryName, standard]) => {
+            const category = categoryName.match(/\((\w)\)/)[1];
+            const actual = ((categoryCounts[category] || 0) / totalEmployees * 100).toFixed(2);
+            const deviation = (actual - standard).toFixed(2);
+            tbody.innerHTML += `
+                <tr>
+                    <td>${categoryName}</td>
+                    <td>${standard}%</td>
+                    <td>${actual}%</td>
+                    <td>${deviation}%</td>
+                </tr>`;
+        });
+    </script>
+</body>
+</html>
