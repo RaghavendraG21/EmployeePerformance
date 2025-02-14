@@ -74,6 +74,7 @@
                     <th>Standard %</th>
                     <th>Actual %</th>
                     <th>Deviation %</th>
+                    <th>Rating</th>
                 </tr>
             </thead>
             <tbody id="adjustmentsBody"></tbody>
@@ -83,36 +84,52 @@
 
     <script>
         const standardPercentages = { 
-            'Outstanding (A)': 10, 
-            'Very Good (B)': 20, 
-            'Good (C)': 40, 
-            'Needs Improvement (D)': 20, 
-            'Low Performers (E)': 10 
+            'A': 10, 
+            'B': 20, 
+            'C': 40, 
+            'D': 20, 
+            'E': 10 
         };
-        const employees = [
-            'A', 'B', 'C', 'C', 'E', 'A', 'C', 'C', 'B', 'E', 'A', 'C', 'D', 'C', 'E'
-        ];
-        const totalEmployees = employees.length;
 
-        const categoryCounts = employees.reduce((acc, rating) => {
+        const employeeRatings = ['C', 'B', 'D', 'D', 'A', 'C'];
+
+        const categoryCounts = employeeRatings.reduce((acc, rating) => {
             acc[rating] = (acc[rating] || 0) + 1;
             return acc;
         }, {});
 
+        const totalEmployees = employeeRatings.length;
+
         const tbody = document.getElementById('adjustmentsBody');
 
         Object.entries(standardPercentages).forEach(([categoryName, standard]) => {
-            const category = categoryName.match(/\((\w)\)/)[1];
-            const actual = ((categoryCounts[category] || 0) / totalEmployees * 100).toFixed(2);
+            const actual = ((categoryCounts[categoryName] || 0) / totalEmployees * 100).toFixed(2);
             const deviation = (actual - standard).toFixed(2);
+            let rating = '';
+
+            if (deviation >= 10) {
+                rating = 'Outstanding';
+            } else if (deviation >= 5) {
+                rating = 'Very Good';
+            } else if (deviation >= -4.99) {
+                rating = 'Good';
+            } else if (deviation >= -10) {
+                rating = 'Needs Improvement';
+            } else {
+                rating = 'Low Performers';
+            }
+
             tbody.innerHTML += `
                 <tr>
                     <td>${categoryName}</td>
                     <td>${standard}%</td>
                     <td>${actual}%</td>
                     <td>${deviation}%</td>
-                </tr>`;
+                    <td>${rating}</td>
+                </tr>
+            `;
         });
     </script>
 </body>
 </html>
+
