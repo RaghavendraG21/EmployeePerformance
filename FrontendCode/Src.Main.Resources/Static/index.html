@@ -3,119 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Performance Management</title>
+    <title>Employee Performance</title>
     <style>
-        * {
-            box-sizing: border-box;
+        /* General body styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1e1e2f;
             margin: 0;
             padding: 0;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e1e1e, #3a3a3a);
-            color: #ccc;
-            min-height: 100vh;
-            width: 100vw;
+            text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 0;
-            margin: 0;
+            height: 100vh;
+            color: #fff;
         }
 
+        /* Main container styling */
         .container {
-            background: #2c2c2c;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px;
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-            width: 85%;
-            height: 85vh;
-            text-align: center;
-            transition: transform 0.3s;
-            overflow-y: auto;
-        }
-
-        .container:hover {
-            transform: translateY(-5px);
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            color: #f5f5f5;
-            margin-top: 15px;
-            font-size: 2rem;
-        }
-
-        .form-section {
-            margin: 15px 0;
-            padding: 15px;
+            background-color: #2d2d3b;
             border-radius: 10px;
-            background: #1f1f1f;
-            border: 2px solid #4caf50;
-            transition: background 0.3s;
-        }
-
-        .form-section:hover {
-            background: #333;
-        }
-
-        h2 {
-            margin-bottom: 10px;
-            color: #ddd;
-            font-size: 1.4rem;
-        }
-
-        form {
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            justify-content: center;
             align-items: center;
         }
 
-        input, select, button {
+        /* Title styling */
+        h1 {
+            font-size: 2.5em;
+            color: #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        /* Card container */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            justify-items: center;
             width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: box-shadow 0.3s;
+            margin-top: 20px;
+            box-sizing: border-box;
         }
 
-        input, select {
-            background: #444;
-            border: 1px solid #666;
-            color: #fff;
-        }
-
-        input:focus, select:focus {
-            box-shadow: 0 0 5px #4caf50;
-        }
-
-        button {
-            background: #4caf50;
-            color: #fff;
+        /* Card styles */
+        .card {
+            background-color: #3a3a4f;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        button:hover {
-            background: #388e3c;
+        /* Card hover effect */
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .action-btn {
-            margin: 5px;
-            width: 45%;
-            background: #2196f3;
+        /* Card title styling */
+        .card h2 {
+            font-size: 1.6em;
+            color: #fff;
+            margin-bottom: 10px;
         }
 
-        .action-btn:hover {
-            background: #1976d2;
+        /* Card description */
+        .card p {
+            font-size: 1.2em;
+            color: #a8a8b2;
+            margin: 10px 0;
         }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
+        /* Button styling inside the cards */
+        .card a {
+            font-size: 1.1em;
+            color: #4CAF50;
+            text-decoration: none;
+            margin-top: 15px;
+            padding: 8px 20px;
+            background-color: #5c5c73;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .card a:hover {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 768px) {
+            .card-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -123,72 +116,50 @@
 <body>
     <div class="container">
         <h1>Employee Performance Management</h1>
-
-        <!-- Add Employee Form -->
-        <div class="form-section">
-            <h2>Add Employee</h2>
-            <form action="/employees/add" method="post">
-                <input type="text" name="name" placeholder="Employee Name" required>
-                <input type="text" name="department" placeholder="Department" required>
-                <select name="rating" required>
-                    <option value="">Select Rating</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                </select>
-                <button type="submit">Add Employee</button>
-            </form>
-        </div>
-
-        <!-- Update Employee Form -->
-        <div class="form-section">
-            <h2>Update Employee</h2>
-            <form action="/employees/update" method="post">
-                <input type="number" name="id" placeholder="Employee ID" required>
-                <input type="text" name="name" placeholder="New Name">
-                <input type="text" name="department" placeholder="New Department">
-                <select name="rating">
-                    <option value="">Select New Rating</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                </select>
-                <button type="submit">Update Employee</button>
-            </form>
-        </div>
-
-        <!-- Actions -->
-        <div class="form-section" style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-            <button class="action-btn" onclick="window.location.href='fetch.html'">Fetch All Employees</button>
-            <button class="action-btn" onclick="window.location.href='distribution.html'">Show Distribution</button>
-            <button class="action-btn" onclick="window.location.href='adjustments.html'">Show Adjustments</button>
-        </div>
-
-        <!-- Delete Employee -->
-        <div class="form-section">
-            <h2>Delete Employee</h2>
-            <form id="deleteForm" onsubmit="event.preventDefault(); deleteEmployee();">
-                <input type="number" id="deleteId" placeholder="Employee ID" required>
-                <button type="submit">Delete Employee</button>
-            </form>
+        
+        <div class="card-container">
+            <div class="card" onclick="window.location.href='add.html'">
+                <h2>Add Employee</h2>
+                <p>Insert new employee details</p>
+                <a href="add.html">Go to Form</a>
+            </div>
+            <div class="card" onclick="window.location.href='update.html'">
+                <h2>Update Employee</h2>
+                <p>Modify existing employee information</p>
+                <a href="update.html">Go to Form</a>
+            </div>
+            <div class="card" onclick="window.location.href='delete.html'">
+                <h2>Delete Employee</h2>
+                <p>Remove employee from the list</p>
+                <a href="delete.html">Go to Form</a>
+            </div>
+            <div class="card" onclick="window.location.href='fetch.html'">
+                <h2>Fetch All Employees</h2>
+                <p>View the list of all employees</p>
+                <a href="fetch.html">View Employees</a>
+            </div>
+            <div class="card" onclick="window.location.href='distribution.html'">
+                <h2>Performance Distribution</h2>
+                <p>View employee performance distribution</p>
+                <a href="distribution.html">View Distribution</a>
+            </div>
+            <div class="card" onclick="window.location.href='actualPercentage.html'">
+                <h2>Actual Percentage</h2>
+                <p>Check actual performance percentages</p>
+                <a href="actualPercentage.html">View Data</a>
+            </div>
+            <div class="card" onclick="window.location.href='deviation.html'">
+                <h2>Performance Deviation</h2>
+                <p>Analyze performance deviations</p>
+                <a href="deviation.html">View Data</a>
+            </div>
+            <div class="card" onclick="window.location.href='suggestions.html'">
+                <h2>Suggestions</h2>
+                <p>View suggestions for improvements</p>
+                <a href="suggestions.html">View Suggestions</a>
+            </div>
         </div>
     </div>
-
-    <script>
-        function deleteEmployee() {
-            const id = document.getElementById('deleteId').value;
-            if (id) {
-                fetch(`/employees/${id}`, { method: 'DELETE' })
-                    .then(response => response.ok ? alert('Employee deleted successfully!') : alert('Failed to delete employee.'))
-                    .catch(() => alert('Error while deleting employee.'));
-            } else {
-                alert('Please enter a valid Employee ID.');
-            }
-        }
-    </script>
 </body>
 </html>
+
