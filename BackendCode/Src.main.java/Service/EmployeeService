@@ -1,17 +1,25 @@
 package com.example.employeeperformance.service;
-
 import com.example.employeeperformance.model.Employee;
 import com.example.employeeperformance.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class EmployeeService {
-    private final EmployeeRepository repository;
+public class EmployeeService { 
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
-    private static final Map<String, Double> STANDARD_DISTRIBUTION = Map.of("A", 10.0, "B", 20.0, "C", 40.0, "D", 20.0, "E", 10.0);
+    private final EmployeeRepository repository;
+    private static final Map<String, Double> STANDARD_DISTRIBUTION = Map.of(
+        "A", 10.0,
+        "B", 20.0,
+        "C", 40.0,
+        "D", 20.0,
+        "E", 10.0
+    );
 
     public EmployeeService(EmployeeRepository repository) {
         this.repository = repository;
@@ -46,11 +54,13 @@ public class EmployeeService {
         }).orElseThrow(() -> new RuntimeException("Employee with ID " + id + " not found"));
     }
 
-    public void deleteEmployee(Long id) {
+    public String deleteEmployee(Long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Employee with ID " + id + " not found");
         }
         repository.deleteById(id);
+        logger.info("Deleted employee with ID: " + id);
+        return "Employee with ID " + id + " was successfully deleted";
     }
 
     private void validateRating(String rating) {
@@ -62,22 +72,56 @@ public class EmployeeService {
     public List<Map<String, Object>> getDetailedDistribution() {
         List<Employee> employees = repository.findAll();
         int totalEmployees = employees.size();
-
         if (totalEmployees == 0) {
             return Collections.emptyList();
         }
-
         Map<String, List<String>> ratingToNames = employees.stream()
-                .filter(emp -> emp.getRating() != null)
-                .collect(Collectors.groupingBy(Employee::getRating, Collectors.mapping(Employee::getName, Collectors.toList())));
-
+            .filter(emp -> emp.getRating() != null)
+            .collect(Collectors.groupingBy(Employee::getRating, Collectors.mapping(Employee::getName, Collectors.toList())));
         return ratingToNames.entrySet().stream()
-                .map(entry -> Map.of(
-                        "rating", entry.getKey(),
-                        "percentage", (entry.getValue().size() * 100.0) / totalEmployees,
-                        "names", entry.getValue()
-                ))
-                .collect(Collectors.toList());
+            .map(entry -> Map.of(
+                "rating", entry.getKey(),
+                "percentage", (entry.getValue().size() * 100.0) / totalEmployees,
+                "names", entry.getValue()
+            ))
+            .collect(Collectors.toList());
+    }
+
+    public Map<String, Double> calculateActualPercentage() {
+        List<Employee> employees = repository.findAll();
+        int totalEmployees = employees.size();
+        if (totalEmployees == 0) return Collections.emptyMap();
+        Map<String, Long> ratingCounts = employees.stream()
+            .collect(Collectors.groupingBy(Employee::getRating, Collectors.counting()));
+        return ratingCounts.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> (e.getValue() * 100.0) / totalEmployees));
+    }
+
+    public Map<String, Double> calculateDeviation() {
+        Map<String, Double> actualPercentage = calculateActualPercentage();
+        Map<String, Double> deviation = new HashMap<>();
+        STANDARD_DISTRIBUTION.forEach((rating, standard) -> {
+            double actual = actualPercentage.getOrDefault(rating, 0.0);
+            deviation.put(rating, actual - standard);
+        });
+        return deviation;
+    }
+
+    public List<String> suggestEmployeesForRevision() {
+        Map<String, Double> deviation = calculateDeviation();
+        List<Employee> employees = repository.findAll();
+        List<String> suggestions = new ArrayList<>();
+        deviation.forEach((rating, dev) -> {
+            if (dev > 0) {
+                employees.stream()
+                    .filter(emp -> emp.getRating().equals(rating))
+                    .map(Employee::getName)
+                    .forEach(suggestions::add);
+            }
+        });
+        return suggestions;
     }
 }
+
+
 
