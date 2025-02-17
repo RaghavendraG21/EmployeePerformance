@@ -1,66 +1,114 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch All Employees</title>
+    <title>Employee Performance</title>
     <style>
+        /* General styling for the page */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
             margin: 0;
             padding: 0;
-            background-color: #f4f6f7;
-            color: #333;
         }
+
+        /* Container styling */
         .container {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #fff;
+            width: 80%;
+            margin: 0 auto;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
         }
+
+        /* Title styling */
         h1 {
             text-align: center;
-            color: #2c3e50;
+            color: #4CAF50;
+            font-size: 32px;
+            margin-bottom: 20px;
         }
+
+        /* Table styling */
         .employee-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            text-align: left;
         }
-        .employee-table th, .employee-table td {
-            border: 1px solid #bdc3c7;
-            padding: 10px;
+
+        .employee-table th,
+        .employee-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
             text-align: center;
         }
+
         .employee-table th {
-            background-color: #3498db;
-            color: #fff;
+            background-color: #4CAF50;
+            color: white;
         }
+
         .employee-table tr:nth-child(even) {
-            background-color: #ecf0f1;
+            background-color: #f2f2f2;
+        }
+
+        /* Responsive styling for smaller screens */
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+
+            .employee-table {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>All Employees</h1>
-        <div id="employeeList"></div>
+        <h1>Employee Performance Details</h1>
+        <table class="employee-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Rating</th>
+                    <th>Standard Percentage</th>
+                    <th>Actual Percentage</th>
+                    <th>Deviation</th>
+                </tr>
+            </thead>
+            <tbody id="employee-table-body">
+                <!-- Employee data will be dynamically added here -->
+            </tbody>
+        </table>
     </div>
+
     <script>
-        fetch('/employees')
+        // Fetching employee data from the backend API
+        fetch('/api/employees/detailed-performance')
             .then(response => response.json())
             .then(data => {
-                const table = `<table class="employee-table">
-                                <thead>
-                                    <tr><th>ID</th><th>Name</th><th>Department</th><th>Rating</th></tr>
-                                </thead>
-                                <tbody>
-                                    ${data.map(emp => `<tr><td>${emp.id}</td><td>${emp.name}</td><td>${emp.department}</td><td>${emp.rating}</td></tr>`).join('')}
-                                </tbody>
-                            </table>`;
-                document.getElementById('employeeList').innerHTML = table;
-            });
+                const tableBody = document.getElementById("employee-table-body");
+                tableBody.innerHTML = ''; // Clear existing data
+
+                data.forEach(employee => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${employee.name}</td>
+                        <td>${employee.rating}</td>
+                        <td>${employee.standardPercentage}</td>
+                        <td>${employee.actualPercentage}</td>
+                        <td>${employee.deviation}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching employee data:', error));
     </script>
 </body>
 </html>
+
