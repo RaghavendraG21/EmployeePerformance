@@ -28,11 +28,9 @@ public class EmployeeService {
 
     // Fetch detailed employee data including rating, standard percentage, actual percentage, and deviation
     public List<Map<String, Object>> getDetailedEmployeeData() {
-        // Fetch all employees from the repository
         List<Employee> employees = repository.findAll();
         int totalEmployees = employees.size();
 
-        // If there are no employees, return an empty list
         if (totalEmployees == 0) {
             return Collections.emptyList();
         }
@@ -42,24 +40,24 @@ public class EmployeeService {
                 .filter(emp -> emp.getRating() != null)
                 .collect(Collectors.groupingBy(Employee::getRating, Collectors.counting()));
 
-        // Store actual percentage for each rating
         Map<String, Double> actualPercentage = new HashMap<>();
         for (Map.Entry<String, Long> entry : ratingCounts.entrySet()) {
             double percentage = (entry.getValue() * 100.0) / totalEmployees;
             actualPercentage.put(entry.getKey(), percentage);
         }
 
-        // Prepare the detailed employee data with name, rating, standard percentage, actual percentage, and deviation
+        // Prepare the detailed employee data with employee ID, name, rating, standard %, actual %, and deviation
         List<Map<String, Object>> detailedData = new ArrayList<>();
         for (Employee employee : employees) {
             String rating = employee.getRating();
             if (rating != null && STANDARD_DISTRIBUTION.containsKey(rating)) {
                 Map<String, Object> employeeData = new HashMap<>();
+                employeeData.put("id", employee.getId()); // Add the employee ID
                 employeeData.put("name", employee.getName());
                 employeeData.put("rating", rating);
-                employeeData.put("standardPercentage", STANDARD_DISTRIBUTION.get(rating));  // Standard percentage
-                employeeData.put("actualPercentage", actualPercentage.getOrDefault(rating, 0.0)); // Actual percentage
-                employeeData.put("deviation", actualPercentage.getOrDefault(rating, 0.0) - STANDARD_DISTRIBUTION.get(rating)); // Deviation
+                employeeData.put("standardPercentage", STANDARD_DISTRIBUTION.get(rating)); 
+                employeeData.put("actualPercentage", actualPercentage.getOrDefault(rating, 0.0)); 
+                employeeData.put("deviation", actualPercentage.getOrDefault(rating, 0.0) - STANDARD_DISTRIBUTION.get(rating)); 
                 detailedData.add(employeeData);
             }
         }
@@ -176,6 +174,7 @@ public class EmployeeService {
     }
 
 }
+
 
 
 
