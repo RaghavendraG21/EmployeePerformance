@@ -74,6 +74,7 @@
         <table class="employee-table">
             <thead>
                 <tr>
+                    <th>Employee ID</th>
                     <th>Name</th>
                     <th>Rating</th>
                     <th>Standard Percentage</th>
@@ -98,6 +99,7 @@
                 data.forEach(employee => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
+                        <td>${employee.id}</td>
                         <td>${employee.name}</td>
                         <td>${employee.rating}</td>
                         <td>${employee.standardPercentage}</td>
@@ -111,4 +113,5 @@
     </script>
 </body>
 </html>
+
 
