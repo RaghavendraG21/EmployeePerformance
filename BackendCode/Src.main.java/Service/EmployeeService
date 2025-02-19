@@ -1,3 +1,4 @@
+
 package com.example.employeeperformance.service;
 
 import com.example.employeeperformance.model.Employee;
@@ -69,7 +70,39 @@ public class EmployeeService {
 
     // Add an employee
     public Employee addEmployee(Employee employee) {
-        return repository.save(employee);
+        // Save the employee first
+        Employee savedEmployee = repository.save(employee);
+
+        // After saving the employee, calculate and set the automatic fields
+
+        String rating = savedEmployee.getRating();
+
+        // Ensure that the rating exists in the standard distribution
+        if (rating != null && STANDARD_DISTRIBUTION.containsKey(rating)) {
+            // Set the standard percentage based on the rating
+            savedEmployee.setStandardPercentage(STANDARD_DISTRIBUTION.get(rating));
+
+            // Calculate the actual percentage for this rating from all employees
+            List<Employee> employees = repository.findAll();
+            int totalEmployees = employees.size();
+
+            // Avoid division by zero
+            if (totalEmployees > 0) {
+                Map<String, Long> ratingCounts = employees.stream()
+                        .filter(emp -> emp.getRating() != null)
+                        .collect(Collectors.groupingBy(Employee::getRating, Collectors.counting()));
+
+                double actualPercentage = (ratingCounts.getOrDefault(rating, 0L) * 100.0) / totalEmployees;
+                savedEmployee.setActualPercentage(actualPercentage);
+
+                // Calculate deviation (difference between actual and standard percentage)
+                double deviation = actualPercentage - savedEmployee.getStandardPercentage();
+                savedEmployee.setDeviation(deviation);
+            }
+        }
+
+        // Save the updated employee with calculated values
+        return repository.save(savedEmployee);
     }
 
     // Get employee by ID
@@ -174,6 +207,7 @@ public class EmployeeService {
     }
 
 }
+
 
 
 
